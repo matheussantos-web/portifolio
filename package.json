@@ -1,0 +1,43 @@
+{
+  "name": "thapps-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Portfólio profissional da Th Apps — Matheus Santos",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite-ssg build && tsx scripts/generate-seo.ts",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "seo": "tsx scripts/generate-seo.ts",
+    "images": "tsx scripts/generate-images.ts",
+    "server:install": "npm --prefix server install",
+    "server:dev": "npm --prefix server run dev",
+    "server:start": "npm --prefix server start"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@unhead/vue": "^2.1.2",
+    "gsap": "^3.15.1",
+    "simple-icons": "^16.37.0",
+    "vue": "^3.5.45",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^24.10.0",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.8",
+    "vite-ssg": "^28.3.0",
+    "vue-tsc": "^3.3.14"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
