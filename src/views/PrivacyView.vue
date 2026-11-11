@@ -187,33 +187,39 @@ usePageSeo({
           </section>
 
           <section id="retencao">
-            <h2>7. Retenção</h2>
+            <h2>7. Retenção de dados</h2>
             <p>
-              As informações são mantidas pelo tempo necessário para analisar e atender a
-              solicitação, dar continuidade a uma eventual relação profissional e cumprir obrigações
-              legais ou regulatórias. Quando não houver mais finalidade legítima para o tratamento,
-              os dados poderão ser eliminados ou anonimizados.
+              As informações enviadas pelo formulário de orçamento são mantidas pelo período de até
+              12 meses para fins de atendimento preliminar e histórico de contato. Em caso de
+              contratação dos serviços, os dados são conservados durante toda a vigência da relação
+              profissional e pelos prazos legais necessários para cumprimento de obrigações fiscais
+              ou regulatórias.
+            </p>
+            <p>
+              Após o término da finalidade do tratamento ou mediante solicitação de eliminação por
+              parte do titular, os dados pessoais são excluídos com segurança ou anonimizados.
             </p>
           </section>
 
           <section id="direitos">
-            <h2>8. Seus direitos</h2>
+            <h2>8. Seus direitos (LGPD)</h2>
             <p>
-              Nos termos da LGPD, o titular pode solicitar, conforme aplicável:
+              Nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você pode solicitar a
+              qualquer momento:
             </p>
             <ul>
-              <li>Confirmação da existência de tratamento;</li>
-              <li>Acesso aos dados;</li>
+              <li>Confirmação da existência de tratamento e acesso aos seus dados;</li>
               <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
               <li>Anonimização, bloqueio ou eliminação de dados desnecessários ou excessivos;</li>
-              <li>Portabilidade, observados os segredos comerciais e industriais;</li>
-              <li>Informação sobre compartilhamentos;</li>
-              <li>Revogação do consentimento, quando essa for a base legal utilizada.</li>
+              <li>Portabilidade das informações, observados os segredos comerciais;</li>
+              <li>Informação sobre compartilhamentos realizados;</li>
+              <li>Revogação do consentimento concedido.</li>
             </ul>
             <p>
-              Para exercer esses direitos, utilize o formulário de contato do site ou os canais
-              diretos disponíveis no rodapé. A solicitação será analisada e respondida dentro dos
-              prazos aplicáveis.
+              Para exercer qualquer um dos seus direitos, envie uma mensagem diretamente para o e-mail
+              do responsável (<a :href="`mailto:${contact.email}`">{{ contact.email }}</a>) ou
+              utilize o formulário de contato do site. As solicitações serão analisadas e respondidas
+              com clareza dentro dos prazos legais aplicáveis.
             </p>
           </section>
 
