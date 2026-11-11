@@ -6,6 +6,7 @@ import FloatingContact from '@/components/layout/FloatingContact.vue'
 import ScrollProgress from '@/components/layout/ScrollProgress.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
+import { cleanupAmbientParallax, initAmbientParallax } from '@/lib/ambient'
 import { ScrollTrigger } from '@/lib/gsap'
 import { prefersReducedMotion } from '@/lib/motion'
 
@@ -52,16 +53,23 @@ watch(
       return
     }
 
-    window.requestAnimationFrame(() => ScrollTrigger.refresh())
+    window.requestAnimationFrame(() => {
+      ScrollTrigger.refresh()
+      initAmbientParallax()
+    })
   },
 )
 
 onMounted(() => {
-  window.requestAnimationFrame(() => ScrollTrigger.refresh())
+  window.requestAnimationFrame(() => {
+    ScrollTrigger.refresh()
+    initAmbientParallax()
+  })
 })
 
 onBeforeUnmount(() => {
   window.clearTimeout(hashScrollTimer)
+  cleanupAmbientParallax()
 })
 </script>
 

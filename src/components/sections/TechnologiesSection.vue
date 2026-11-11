@@ -68,21 +68,25 @@ const marqueeItems = technologyCategories.flatMap((category) => category.items)
       </div>
 
       <div v-reveal class="relative mt-12 overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.015] py-4">
-        <div class="marquee flex w-max items-center gap-10 px-6">
+        <div class="marquee flex w-max items-center gap-4 px-6">
           <template v-for="copy in 2" :key="copy">
-            <span
+            <div
               v-for="item in marqueeItems"
               :key="`${copy}-${item.name}`"
-              class="flex items-center gap-2.5 whitespace-nowrap text-[0.72rem] font-medium uppercase tracking-[0.16em] text-muted/70"
+              class="marquee-pill group/tech flex items-center gap-2.5 rounded-full border border-white/[0.07] bg-white/[0.02] px-3.5 py-1.5 transition-all duration-300 hover:border-gold/50 hover:bg-gold/[0.08] hover:shadow-[0_0_18px_rgba(214,166,74,0.18)]"
               :aria-hidden="copy === 2 ? 'true' : undefined"
             >
-              <span class="size-1 rotate-45 bg-gold/60" aria-hidden="true" />
-              {{ item.name }}
-            </span>
+              <span class="grid size-5 shrink-0 place-items-center rounded-full bg-white/[0.04] text-paper/70 transition-colors duration-300 group-hover/tech:bg-gold/20 group-hover/tech:text-gold">
+                <TechIcon :icon="item.icon" :size="12" />
+              </span>
+              <span class="whitespace-nowrap text-[0.74rem] font-medium tracking-wide text-muted/80 transition-colors duration-300 group-hover/tech:text-paper">
+                {{ item.name }}
+              </span>
+            </div>
           </template>
         </div>
-        <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-ink to-transparent" />
-        <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-ink to-transparent" />
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-ink to-transparent" />
+        <div class="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-ink to-transparent" />
       </div>
 
       <p v-reveal class="mt-6 text-center text-[0.72rem] text-muted/70">

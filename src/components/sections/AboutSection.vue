@@ -1,21 +1,89 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { brand } from '@/data/brand'
 import { aboutCharacteristics, aboutParagraphs } from '@/data/about'
+import { gsap, ScrollTrigger } from '@/lib/gsap'
+import { prefersReducedMotion } from '@/lib/motion'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
+
+const sectionRef = ref<HTMLElement | null>(null)
+const frameRef = ref<HTMLElement | null>(null)
+const decorativeBadgeRef = ref<HTMLElement | null>(null)
+let cleanup: (() => void) | null = null
+
+onMounted(() => {
+  if (!sectionRef.value || prefersReducedMotion()) return
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+
+  const ctx = gsap.context(() => {
+    // Parallax discreto na moldura da foto (quando existir)
+    if (frameRef.value) {
+      gsap.fromTo(
+        frameRef.value,
+        { y: -24 },
+        {
+          y: 24,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.value,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        },
+      )
+    }
+
+    // Parallax sutil no elemento decorativo geométrico de fundo
+    if (decorativeBadgeRef.value) {
+      gsap.fromTo(
+        decorativeBadgeRef.value,
+        { y: 20 },
+        {
+          y: -20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.value,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.8,
+          },
+        },
+      )
+    }
+  }, sectionRef.value)
+
+  cleanup = () => {
+    ctx.revert()
+    ScrollTrigger.refresh()
+  }
+})
+
+onBeforeUnmount(() => cleanup?.())
 </script>
 
 <template>
-  <section id="sobre" class="section" aria-labelledby="about-title">
+  <section id="sobre" ref="sectionRef" class="section relative overflow-hidden" aria-labelledby="about-title">
+    <!-- Elemento decorativo geométrico sutil com parallax de profundidade -->
+    <div
+      ref="decorativeBadgeRef"
+      class="pointer-events-none absolute right-[-4rem] top-1/4 -z-10 hidden size-64 select-none opacity-20 lg:block will-change-transform"
+      aria-hidden="true"
+    >
+      <div class="h-full w-full rounded-full border border-gold/30 bg-[radial-gradient(circle,rgba(214,166,74,0.08)_0%,transparent_70%)]" />
+    </div>
+
     <div
       class="shell grid gap-12 lg:gap-16"
       :class="brand.aboutPhoto ? 'lg:grid-cols-[0.85fr_1.15fr]' : ''"
     >
       <div v-if="brand.aboutPhoto" v-reveal class="relative">
-        <div class="relative mx-auto max-w-sm lg:sticky lg:top-28 lg:mx-0 lg:max-w-none">
+        <div ref="frameRef" class="relative mx-auto max-w-sm lg:sticky lg:top-28 lg:mx-0 lg:max-w-none will-change-transform">
           <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(214,166,74,0.14),transparent_65%)] blur-xl" />
 
-          <div class="card relative overflow-hidden">
+          <!-- Moldura com detalhe de linhas com deslocamento -->
+          <div class="card relative overflow-hidden ring-1 ring-gold/20">
             <div class="relative aspect-[4/5]">
               <img
                 :src="brand.aboutPhoto"

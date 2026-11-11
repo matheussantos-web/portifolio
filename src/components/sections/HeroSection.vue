@@ -5,6 +5,7 @@ import { buildWhatsAppLink } from '@/lib/contact'
 import { gsap } from '@/lib/gsap'
 import { prefersReducedMotion } from '@/lib/motion'
 import AppIcon from '@/components/ui/AppIcon.vue'
+import HeroCanvas from '@/components/ui/HeroCanvas.vue'
 import SocialIcon from '@/components/ui/SocialIcon.vue'
 
 const heroRef = ref<HTMLElement | null>(null)
@@ -85,14 +86,14 @@ onMounted(() => {
       const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
       timeline
-        .from('[data-hero-eyebrow]', { opacity: 0, y: 16, duration: 0.7 })
-        .from('[data-hero-line]', { opacity: 0, y: '115%', duration: 1.05, stagger: 0.14 }, '-=0.35')
-        .from('[data-hero-intro]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
-        .from('[data-hero-copy]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
-        .from('[data-hero-actions]', { opacity: 0, y: 16, duration: 0.7 }, '-=0.55')
-        .from('[data-hero-specialty]', { opacity: 0, y: 12, duration: 0.6, stagger: 0.08 }, '-=0.4')
-        .from('[data-hero-visual]', { opacity: 0, y: 26, scale: 0.98, duration: 1.1 }, '-=1.1')
-        .from('[data-hero-float]', { opacity: 0, y: 18, duration: 0.7, stagger: 0.12 }, '-=0.6')
+        .from('[data-hero-eyebrow]', { opacity: 0, y: 14, duration: 0.45 })
+        .from('[data-hero-line]', { opacity: 0, y: '115%', duration: 0.8, stagger: 0.09 }, '-=0.3')
+        .from('[data-hero-intro]', { opacity: 0, y: 14, duration: 0.5 }, '-=0.5')
+        .from('[data-hero-copy]', { opacity: 0, y: 14, duration: 0.5 }, '-=0.45')
+        .from('[data-hero-actions]', { opacity: 0, y: 14, duration: 0.5 }, '-=0.4')
+        .from('[data-hero-specialty]', { opacity: 0, y: 10, duration: 0.4, stagger: 0.05 }, '-=0.35')
+        .from('[data-hero-visual]', { opacity: 0, y: 22, scale: 0.98, duration: 0.85 }, '-=0.85')
+        .from('[data-hero-float]', { opacity: 0, y: 14, duration: 0.5, stagger: 0.08 }, '-=0.45')
     }, heroRef.value)
 
     cleanup = () => {
@@ -176,6 +177,7 @@ onBeforeUnmount(() => cleanup?.())
     aria-labelledby="hero-title"
   >
     <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+      <HeroCanvas />
       <div class="absolute inset-0 grid-lines opacity-70" />
       <div class="ambient-orb left-1/2 top-[-14rem] h-[30rem] w-[46rem] -translate-x-1/2 bg-gold/[0.07]" />
       <div class="ambient-orb -left-40 top-1/3 h-[26rem] w-[26rem] bg-[#6d4bb8]/[0.07]" />
