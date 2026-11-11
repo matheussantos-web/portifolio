@@ -27,6 +27,7 @@ const { requestQuote } = useQuoteRequest()
 
         <button
           v-reveal
+          v-magnetic
           type="button"
           class="btn btn-secondary shrink-0 self-start md:self-auto"
           @click="requestQuote()"

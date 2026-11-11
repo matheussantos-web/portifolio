@@ -72,7 +72,9 @@ const statusClass: Record<string, string> = {
           v-for="(project, index) in filtered"
           :key="project.slug"
           v-reveal="{ delay: index * 0.07 }"
-          class="card card-hover group flex flex-col overflow-hidden"
+          v-tilt
+          v-glow
+          class="card card-hover glow-card group flex flex-col overflow-hidden"
         >
           <RouterLink
             v-if="project.image"
@@ -177,6 +179,7 @@ const statusClass: Record<string, string> = {
             conversar sobre ela.
           </p>
           <button
+            v-magnetic
             type="button"
             class="btn btn-primary relative mt-6 !min-h-[2.65rem] !text-[0.78rem]"
             @click="requestQuote()"

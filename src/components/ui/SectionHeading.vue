@@ -20,7 +20,11 @@ withDefaults(
       {{ eyebrow }}
     </p>
     <h2 class="section-title mt-4" :class="size === 'large' ? 'md:text-[3.6rem]' : ''">
-      <slot>{{ title }}</slot>
+      <span class="block overflow-hidden py-0.5">
+        <span class="inline-block">
+          <slot>{{ title }}</slot>
+        </span>
+      </span>
     </h2>
     <p v-if="description" class="mt-4 max-w-xl text-[0.94rem] leading-relaxed text-muted" :class="align === 'center' ? 'mx-auto' : ''">
       {{ description }}

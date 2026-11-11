@@ -28,7 +28,8 @@ import SectionHeading from '@/components/ui/SectionHeading.vue'
           v-for="(item, index) in differentials"
           :key="item.title"
           v-reveal="{ delay: index * 0.05 }"
-          class="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.018] p-6 transition hover:border-gold/25 hover:bg-gold/[0.035]"
+          v-glow
+          class="glow-card group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.018] p-6 transition hover:border-gold/25 hover:bg-gold/[0.035]"
         >
           <span class="pointer-events-none absolute -right-6 -top-6 font-display text-[4.5rem] font-semibold leading-none text-white/[0.035] transition group-hover:text-gold/[0.07]">
             0{{ index + 1 }}
@@ -56,7 +57,7 @@ import SectionHeading from '@/components/ui/SectionHeading.vue'
             Da primeira conversa à entrega, o acompanhamento é direto.
           </p>
         </div>
-        <RouterLink to="/#contato" class="btn btn-primary shrink-0 !min-h-[2.7rem] !text-[0.78rem]">
+        <RouterLink v-magnetic to="/#contato" class="btn btn-primary shrink-0 !min-h-[2.7rem] !text-[0.78rem]">
           Vamos conversar
           <AppIcon name="arrow-up-right" :size="15" />
         </RouterLink>

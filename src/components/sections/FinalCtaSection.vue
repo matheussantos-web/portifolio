@@ -28,12 +28,13 @@ const whatsappLink = buildWhatsAppLink('contact')
           </p>
 
           <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button type="button" class="btn btn-primary w-full sm:w-auto" @click="requestQuote()">
+            <button v-magnetic type="button" class="btn btn-primary w-full sm:w-auto" @click="requestQuote()">
               Solicitar orçamento
               <AppIcon name="arrow-up-right" :size="16" />
             </button>
             <a
               v-if="whatsappLink"
+              v-magnetic
               :href="whatsappLink"
               target="_blank"
               rel="noopener noreferrer"

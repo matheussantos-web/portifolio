@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { brand } from '@/data/brand'
 import { buildWhatsAppLink } from '@/lib/contact'
 import { gsap } from '@/lib/gsap'
@@ -17,29 +17,120 @@ const specialties = [
   { label: 'Experiências Digitais', icon: 'spark' },
 ] as const
 
+interface CodeLine {
+  no: string
+  html: string
+  chars: number
+}
+
+const rawLines: CodeLine[] = [
+  {
+    no: '01',
+    html: `<span class="text-[#8b7bd8]">const</span> <span class="text-paper">ideia</span> <span class="text-muted">=</span> <span class="text-gold-soft">'do cliente'</span>`,
+    chars: 27,
+  },
+  {
+    no: '02',
+    html: '',
+    chars: 0,
+  },
+  {
+    no: '03',
+    html: `<span class="text-[#8b7bd8]">function</span> <span class="text-[#7ec8e3]">transformar</span><span class="text-muted">(</span><span class="text-gold-soft">ideia</span><span class="text-muted">)</span> <span class="text-muted">{</span>`,
+    chars: 29,
+  },
+  {
+    no: '04',
+    html: `<span class="pl-3 text-muted">const</span> <span class="text-paper">plano</span> <span class="text-muted">=</span> <span class="text-[#7ec8e3]">planejar</span><span class="text-muted">(</span><span class="text-gold-soft">ideia</span><span class="text-muted">)</span>`,
+    chars: 33,
+  },
+  {
+    no: '05',
+    html: `<span class="pl-3 text-muted">const</span> <span class="text-paper">solucao</span> <span class="text-muted">=</span> <span class="text-[#7ec8e3]">desenvolver</span><span class="text-muted">(</span><span class="text-gold-soft">plano</span><span class="text-muted">)</span>`,
+    chars: 36,
+  },
+  {
+    no: '06',
+    html: '',
+    chars: 0,
+  },
+  {
+    no: '07',
+    html: `<span class="pl-3 text-[#8b7bd8]">return</span> <span class="text-[#7ec8e3]">entregar</span><span class="text-muted">(</span><span class="text-gold-soft">solucao</span><span class="text-muted">)</span>`,
+    chars: 26,
+  },
+  {
+    no: '08',
+    html: `<span class="text-muted">}</span>`,
+    chars: 1,
+  },
+]
+
+// Estado inicial: no SSR, renderiza 100% das linhas completas
+const visibleLineCount = ref(rawLines.length)
+const activeTypingLine = ref(-1)
+const buildStatus = ref<'compiling' | 'ready'>('ready')
+let typingTimer: number | null = null
+
 let cleanup: (() => void) | null = null
 
 onMounted(() => {
-  if (!heroRef.value || prefersReducedMotion()) return
+  if (!heroRef.value) return
 
-  const ctx = gsap.context(() => {
-    const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
+  const isReduced = prefersReducedMotion()
+  const isFinePointer = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
-    timeline
-      .from('[data-hero-eyebrow]', { opacity: 0, y: 16, duration: 0.7 })
-      .from('[data-hero-line]', { opacity: 0, y: 34, duration: 1, stagger: 0.12 }, '-=0.4')
-      .from('[data-hero-intro]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
-      .from('[data-hero-copy]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
-      .from('[data-hero-actions]', { opacity: 0, y: 16, duration: 0.7 }, '-=0.55')
-      .from('[data-hero-specialty]', { opacity: 0, y: 12, duration: 0.6, stagger: 0.08 }, '-=0.4')
-      .from('[data-hero-visual]', { opacity: 0, y: 26, scale: 0.98, duration: 1.1 }, '-=1.1')
-      .from('[data-hero-float]', { opacity: 0, y: 18, duration: 0.7, stagger: 0.12 }, '-=0.6')
-  }, heroRef.value)
+  if (!isReduced) {
+    const ctx = gsap.context(() => {
+      const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+      timeline
+        .from('[data-hero-eyebrow]', { opacity: 0, y: 16, duration: 0.7 })
+        .from('[data-hero-line]', { opacity: 0, y: '115%', duration: 1.05, stagger: 0.14 }, '-=0.35')
+        .from('[data-hero-intro]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
+        .from('[data-hero-copy]', { opacity: 0, y: 18, duration: 0.8 }, '-=0.6')
+        .from('[data-hero-actions]', { opacity: 0, y: 16, duration: 0.7 }, '-=0.55')
+        .from('[data-hero-specialty]', { opacity: 0, y: 12, duration: 0.6, stagger: 0.08 }, '-=0.4')
+        .from('[data-hero-visual]', { opacity: 0, y: 26, scale: 0.98, duration: 1.1 }, '-=1.1')
+        .from('[data-hero-float]', { opacity: 0, y: 18, duration: 0.7, stagger: 0.12 }, '-=0.6')
+    }, heroRef.value)
+
+    cleanup = () => {
+      ctx.revert()
+    }
+  }
+
+  // Digitação viva: apenas desktop com mouse e sem reduced-motion
+  if (!isReduced && isFinePointer) {
+    visibleLineCount.value = 0
+    activeTypingLine.value = 0
+    buildStatus.value = 'compiling'
+
+    let currentLine = 0
+    const typeNextLine = () => {
+      if (currentLine < rawLines.length) {
+        currentLine++
+        visibleLineCount.value = currentLine
+        activeTypingLine.value = currentLine < rawLines.length ? currentLine : -1
+
+        // Ritmo de digitação natural (linhas vazias são mais rápidas)
+        const delay = rawLines[currentLine - 1]?.chars ? 160 + rawLines[currentLine - 1]!.chars * 11 : 90
+        typingTimer = window.setTimeout(typeNextLine, delay)
+      } else {
+        // Concluído: ativa "build ok" com sucesso
+        activeTypingLine.value = -1
+        buildStatus.value = 'ready'
+      }
+    }
+
+    // Inicia após a entrada do hero
+    typingTimer = window.setTimeout(typeNextLine, 850)
+  }
 
   const visual = visualRef.value
   let frame = 0
   const onPointerMove = (event: PointerEvent) => {
-    if (!visual) return
+    if (!visual || isReduced) return
     if (frame) return
     frame = window.requestAnimationFrame(() => {
       frame = 0
@@ -57,15 +148,17 @@ onMounted(() => {
   }
 
   const onPointerLeave = () => {
-    if (!visual) return
+    if (!visual || isReduced) return
     gsap.to(visual, { rotateX: 0, rotateY: 0, duration: 0.9, ease: 'power3.out' })
   }
 
   visual?.addEventListener('pointermove', onPointerMove)
   visual?.addEventListener('pointerleave', onPointerLeave)
 
+  const prevCleanup = cleanup
   cleanup = () => {
-    ctx.revert()
+    prevCleanup?.()
+    if (typingTimer) window.clearTimeout(typingTimer)
     visual?.removeEventListener('pointermove', onPointerMove)
     visual?.removeEventListener('pointerleave', onPointerLeave)
     if (frame) window.cancelAnimationFrame(frame)
@@ -94,9 +187,13 @@ onBeforeUnmount(() => cleanup?.())
         <p data-hero-eyebrow class="eyebrow">Th Apps · Desenvolvimento Web</p>
 
         <h1 id="hero-title" class="display-title mt-6">
-          <span data-hero-line class="block">Ideias em código.</span>
-          <span data-hero-line class="block">
-            Soluções em <span class="serif-accent">realidade.</span>
+          <span class="block overflow-hidden pb-1">
+            <span data-hero-line class="block will-change-transform">Ideias em código.</span>
+          </span>
+          <span class="block overflow-hidden pb-1">
+            <span data-hero-line class="block will-change-transform">
+              Soluções em <span class="serif-accent">realidade.</span>
+            </span>
           </span>
         </h1>
 
@@ -113,16 +210,17 @@ onBeforeUnmount(() => cleanup?.())
         </p>
 
         <div data-hero-actions class="mt-8 flex flex-wrap items-center gap-3">
-          <RouterLink to="/#projetos" class="btn btn-primary">
+          <RouterLink v-magnetic to="/#projetos" class="btn btn-primary">
             Explorar projetos
             <AppIcon name="arrow-right" :size="16" />
           </RouterLink>
-          <RouterLink to="/#contato" class="btn btn-secondary">
+          <RouterLink v-magnetic to="/#contato" class="btn btn-secondary">
             Vamos conversar
             <AppIcon name="arrow-up-right" :size="16" />
           </RouterLink>
           <a
             v-if="whatsappLink"
+            v-magnetic
             :href="whatsappLink"
             target="_blank"
             rel="noopener noreferrer"
@@ -166,15 +264,26 @@ onBeforeUnmount(() => cleanup?.())
               <span class="text-[0.55rem] uppercase tracking-[0.2em] text-muted/50">live</span>
             </div>
 
-            <div class="space-y-2 p-5 font-mono text-[0.66rem] leading-relaxed sm:text-[0.72rem]">
-              <p><span class="text-muted/40">01</span> <span class="text-[#8b7bd8]">const</span> <span class="text-paper">ideia</span> <span class="text-muted">=</span> <span class="text-gold-soft">'do cliente'</span></p>
-              <p><span class="text-muted/40">02</span></p>
-              <p><span class="text-muted/40">03</span> <span class="text-[#8b7bd8]">function</span> <span class="text-[#7ec8e3]">transformar</span><span class="text-muted">(</span><span class="text-gold-soft">ideia</span><span class="text-muted">)</span> <span class="text-muted">{</span></p>
-              <p><span class="text-muted/40">04</span> <span class="pl-3 text-muted">const</span> <span class="text-paper">plano</span> <span class="text-muted">=</span> <span class="text-[#7ec8e3]">planejar</span><span class="text-muted">(</span><span class="text-gold-soft">ideia</span><span class="text-muted">)</span></p>
-              <p><span class="text-muted/40">05</span> <span class="pl-3 text-muted">const</span> <span class="text-paper">solucao</span> <span class="text-muted">=</span> <span class="text-[#7ec8e3]">desenvolver</span><span class="text-muted">(</span><span class="text-gold-soft">plano</span><span class="text-muted">)</span></p>
-              <p><span class="text-muted/40">06</span></p>
-              <p><span class="text-muted/40">07</span> <span class="pl-3 text-[#8b7bd8]">return</span> <span class="text-[#7ec8e3]">entregar</span><span class="text-muted">(</span><span class="text-gold-soft">solucao</span><span class="text-muted">)</span></p>
-              <p><span class="text-muted/40">08</span> <span class="text-muted">}</span><span class="ml-1 inline-block h-3.5 w-1.5 translate-y-0.5 bg-gold/80 align-middle" style="animation: blink 1.4s step-end infinite" /></p>
+            <div class="min-h-[12.8rem] space-y-2 p-5 font-mono text-[0.66rem] leading-relaxed sm:text-[0.72rem]">
+              <template v-for="(line, idx) in rawLines" :key="line.no">
+                <p v-if="idx < visibleLineCount" class="flex items-baseline">
+                  <span class="w-6 shrink-0 text-muted/40">{{ line.no }}</span>
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <span class="min-w-0" v-html="line.html" />
+                  <span
+                    v-if="idx === visibleLineCount - 1"
+                    class="ml-1 inline-block h-3.5 w-1.5 translate-y-0.5 bg-gold/80 align-middle"
+                    style="animation: blink 1.2s step-end infinite"
+                  />
+                </p>
+                <p v-else-if="idx === activeTypingLine" class="flex items-baseline">
+                  <span class="w-6 shrink-0 text-muted/40">{{ line.no }}</span>
+                  <span
+                    class="ml-1 inline-block h-3.5 w-1.5 translate-y-0.5 bg-gold/80 align-middle"
+                    style="animation: blink 1.2s step-end infinite"
+                  />
+                </p>
+              </template>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 border-t border-white/[0.07] bg-black/20 px-4 py-3.5">
@@ -182,9 +291,15 @@ onBeforeUnmount(() => cleanup?.())
               <span class="chip !text-[0.6rem]">Vite</span>
               <span class="chip !text-[0.6rem]">Tailwind</span>
               <span class="chip !text-[0.6rem]">Node.js</span>
-              <span class="ml-auto inline-flex items-center gap-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-success">
-                <span class="status-dot !bg-success" />
-                build ok
+              <span
+                class="ml-auto inline-flex items-center gap-1.5 text-[0.58rem] uppercase tracking-[0.18em] transition-colors duration-500"
+                :class="buildStatus === 'ready' ? 'text-success' : 'text-gold-soft'"
+              >
+                <span
+                  class="status-dot transition-colors duration-500"
+                  :class="buildStatus === 'ready' ? '!bg-success' : '!bg-gold-soft animate-pulse'"
+                />
+                {{ buildStatus === 'ready' ? 'build ok' : 'compilando...' }}
               </span>
             </div>
           </div>
