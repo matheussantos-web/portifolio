@@ -194,7 +194,11 @@ usePageSeo({
           </aside>
         </div>
 
-        <div v-reveal class="mt-12 overflow-hidden rounded-[1.5rem] border border-white/[0.08] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.95)]">
+        <div
+          v-if="project.image"
+          v-reveal
+          class="mt-12 overflow-hidden rounded-[1.5rem] border border-white/[0.08] shadow-[0_40px_120px_-60px_rgba(0,0,0,0.95)]"
+        >
           <ProjectVisual :project="project" variant="hero" />
         </div>
 

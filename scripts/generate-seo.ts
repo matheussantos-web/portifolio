@@ -3,16 +3,15 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadEnv } from 'vite'
 import { projects } from '../src/data/projects'
+import { resolveSiteUrl } from '../src/data/site'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = path.join(root, 'dist')
+const publicDir = path.join(root, 'public')
 
 // Prioriza variáveis do ambiente (Vercel/Render). Em desenvolvimento, lê o .env.
 const fileEnv = loadEnv(process.env.NODE_ENV || 'production', root, '')
-const siteUrl = (process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL || 'https://thapps.example').replace(
-  /\/$/,
-  '',
-)
+const siteUrl = resolveSiteUrl(process.env.VITE_SITE_URL || fileEnv.VITE_SITE_URL)
 const lastmod = new Date().toISOString().slice(0, 10)
 
 interface SitemapEntry {
@@ -70,9 +69,14 @@ Sitemap: ${siteUrl}/sitemap.xml
 
 async function main() {
   await mkdir(distDir, { recursive: true })
+  await mkdir(publicDir, { recursive: true })
+  const sitemapXml = sitemap()
+  const robotsTxt = robots()
   await Promise.all([
-    writeFile(path.join(distDir, 'sitemap.xml'), sitemap(), 'utf8'),
-    writeFile(path.join(distDir, 'robots.txt'), robots(), 'utf8'),
+    writeFile(path.join(distDir, 'sitemap.xml'), sitemapXml, 'utf8'),
+    writeFile(path.join(distDir, 'robots.txt'), robotsTxt, 'utf8'),
+    writeFile(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf8'),
+    writeFile(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf8'),
   ])
 
   // Vercel serve 404.html para rotas estáticas não encontradas.

@@ -11,6 +11,13 @@ type Filter = 'Todos' | ProjectCategory
 const activeFilter = ref<Filter>('Todos')
 const { requestQuote } = useQuoteRequest()
 
+/** Só mostra categorias que possuem pelo menos um projeto. */
+const visibleCategories = computed(() =>
+  projectCategories.filter(
+    (category) => category === 'Todos' || projects.some((project) => project.category === category),
+  ),
+)
+
 const filtered = computed(() =>
   activeFilter.value === 'Todos'
     ? projects
@@ -44,7 +51,7 @@ const statusClass: Record<string, string> = {
 
         <div v-reveal class="flex flex-wrap gap-2" role="group" aria-label="Filtrar projetos por categoria">
           <button
-            v-for="category in projectCategories"
+            v-for="category in visibleCategories"
             :key="category"
             type="button"
             class="filter-button"
@@ -68,6 +75,7 @@ const statusClass: Record<string, string> = {
           class="card card-hover group flex flex-col overflow-hidden"
         >
           <RouterLink
+            v-if="project.image"
             :to="`/projetos/${project.slug}`"
             class="relative block overflow-hidden border-b border-white/[0.06]"
             :aria-label="`Conhecer o projeto ${project.name}`"

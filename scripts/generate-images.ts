@@ -85,7 +85,7 @@ async function makeOgImage() {
       <text x="90" y="540" fill="#A5A5AA" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="0.2">Desenvolvimento de sites, sistemas e soluções digitais personalizadas.</text>
 
       <text x="90" y="588" fill="#D6A64A" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="4.4">TH APPS · MATHEUS SANTOS</text>
-      <text x="${width - 90}" y="588" fill="#A5A5AA" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="1.6" text-anchor="end">thapps</text>
+      <text x="${width - 90}" y="588" fill="#A5A5AA" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="1.6" text-anchor="end">th.app.br</text>
 
       <g opacity="0.5">
         <circle cx="1070" cy="500" r="190" fill="none" stroke="#D6A64A" stroke-opacity="0.08" />

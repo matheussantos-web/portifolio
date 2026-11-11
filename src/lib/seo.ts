@@ -1,6 +1,7 @@
 import { useHead } from '@unhead/vue'
 import { brand } from '@/data/brand'
 import { socialChannels } from '@/data/links'
+import { OG_IMAGE_HEIGHT, OG_IMAGE_PATH, OG_IMAGE_WIDTH } from '@/data/site'
 
 interface PageSeoOptions {
   title: string
@@ -19,7 +20,7 @@ function absoluteUrl(path: string): string {
 
 export function usePageSeo(options: PageSeoOptions) {
   const canonical = absoluteUrl(options.path)
-  const image = absoluteUrl(options.image || '/og-image.png')
+  const image = absoluteUrl(options.image || OG_IMAGE_PATH)
   const type = options.type || 'website'
 
   const scripts = options.jsonLd
@@ -47,8 +48,9 @@ export function usePageSeo(options: PageSeoOptions) {
       { property: 'og:description', content: options.description },
       { property: 'og:url', content: canonical },
       { property: 'og:image', content: image },
-      { property: 'og:image:width', content: '1200' },
-      { property: 'og:image:height', content: '630' },
+      { property: 'og:image:width', content: String(OG_IMAGE_WIDTH) },
+      { property: 'og:image:height', content: String(OG_IMAGE_HEIGHT) },
+      { property: 'og:image:type', content: 'image/png' },
       { property: 'og:image:alt', content: `${brand.name} — ${brand.tagline}` },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: options.title },

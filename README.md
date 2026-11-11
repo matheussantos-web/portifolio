@@ -149,7 +149,7 @@ Para testar sem chaves reais, use as [chaves de teste oficiais](https://develope
 
 ### Regra dos contatos vazios
 
-`src/data/links.ts` começa com os canais diretos **vazios** porque nenhum número, e-mail ou perfil foi inventado. Campos vazios não são renderizados: o botão flutuante vira "Solicitar orçamento", os links sociais somem e o formulário continua funcionando.
+`src/data/links.ts` só publica canais confirmados. Campos vazios não são renderizados: sem WhatsApp, o botão flutuante vira "Solicitar orçamento"; Instagram e LinkedIn só aparecem com URL preenchida.
 
 Para ativar os canais, preencha:
 
@@ -172,7 +172,7 @@ Ao preencher o WhatsApp, o site ativa automaticamente:
 
 ### Projetos e imagens
 
-- `image: ''` mantém o **placeholder elegante** gerado em código. Nenhum mockup falso é usado.
+- `image: ''` **oculta** o bloco visual. Nenhum mockup ou texto "em breve" é usado.
 - Para usar uma imagem real, coloque o arquivo em `public/` e informe o caminho em `image` (ex.: `/projetos/festou.jpg`).
 - `gallery: []` oculta a seção de galeria. Preencha com `{ src, alt, caption? }` para exibi-la.
 - Adicionar um projeto em `src/data/projects.ts` cria automaticamente:
@@ -298,8 +298,8 @@ Ajuste o texto se os provedores mudarem (Resend, Cloudflare, hospedagem) ou se n
 
 ## Limitações desta versão
 
-- Nenhum canal direto (WhatsApp, e-mail, Instagram, LinkedIn) foi inventado; preencha `src/data/links.ts` para exibi-los.
-- Nenhuma imagem real de projeto foi fornecida; os placeholders permanecem até que `image`/`gallery` sejam preenchidos.
-- O domínio de produção ainda é um exemplo (`https://thapps.example`); configure `VITE_SITE_URL`.
+- WhatsApp, LinkedIn e Instagram só entram em `src/data/links.ts` quando houver URL/número público confirmado.
+- Sem screenshot real, o bloco visual do projeto não é renderizado.
+- A URL canônica padrão é `https://www.th.app.br` (`src/data/site.ts`). Override: `VITE_SITE_URL`.
 - A entrega de e-mail depende de credenciais do Resend e de um domínio verificado.
 - Não há métricas, depoimentos ou resultados fictícios no site.

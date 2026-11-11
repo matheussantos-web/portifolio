@@ -73,6 +73,7 @@ export const hasWhatsApp = normalizeWhatsAppNumber(contact.whatsappNumber).lengt
 export const hasEmail = contact.email.trim().length > 0
 export const hasInstagram = contact.instagram.trim().length > 0
 export const hasLinkedIn = contact.linkedin.trim().length > 0
+export const hasDirectChannels = hasWhatsApp || hasEmail || hasLinkedIn
 
 export type WhatsAppContext = 'default' | 'hero' | 'contact' | 'footer' | 'project' | 'service'
 

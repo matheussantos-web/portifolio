@@ -7,38 +7,25 @@ import SectionHeading from '@/components/ui/SectionHeading.vue'
 
 <template>
   <section id="sobre" class="section" aria-labelledby="about-title">
-    <div class="shell grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-      <div v-reveal class="relative">
+    <div
+      class="shell grid gap-12 lg:gap-16"
+      :class="brand.aboutPhoto ? 'lg:grid-cols-[0.85fr_1.15fr]' : ''"
+    >
+      <div v-if="brand.aboutPhoto" v-reveal class="relative">
         <div class="relative mx-auto max-w-sm lg:sticky lg:top-28 lg:mx-0 lg:max-w-none">
           <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(214,166,74,0.14),transparent_65%)] blur-xl" />
 
           <div class="card relative overflow-hidden">
             <div class="relative aspect-[4/5]">
               <img
-                v-if="brand.aboutPhoto"
                 :src="brand.aboutPhoto"
                 :alt="brand.aboutPhotoAlt"
                 class="absolute inset-0 h-full w-full object-cover"
+                width="800"
+                height="1000"
                 loading="lazy"
                 decoding="async"
               />
-
-              <template v-else>
-                <div class="absolute inset-0 bg-[linear-gradient(150deg,#1e1f24_0%,#141519_58%,#0d0e10_100%)]" />
-                <div class="absolute inset-0 grid-lines opacity-50" />
-                <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gold/[0.12] blur-[70px]" />
-                <div class="absolute inset-0 grid place-items-center">
-                  <div class="text-center">
-                    <span class="grid size-20 place-items-center rounded-2xl border border-gold/25 bg-graphite/60 text-gold shadow-[0_0_0_1px_rgba(214,166,74,0.05)]">
-                      <AppIcon name="image" :size="30" />
-                    </span>
-                    <p class="mt-5 text-[0.62rem] font-medium uppercase tracking-[0.24em] text-muted">
-                      Espaço para fotografia
-                    </p>
-                    <p class="mt-1.5 text-[0.58rem] text-muted/60">Matheus Santos</p>
-                  </div>
-                </div>
-              </template>
 
               <div class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/[0.06]" />
               <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink/90 to-transparent" />

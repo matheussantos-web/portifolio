@@ -7,7 +7,9 @@ import {
   buildWhatsAppLink,
   fallbackWhatsAppMessage,
   formatPhoneBR,
+  hasDirectChannels,
   hasEmail,
+  hasLinkedIn,
   hasWhatsApp,
   isValidEmail,
   isValidPhoneBR,
@@ -16,6 +18,7 @@ import {
 } from '@/lib/contact'
 import { consumeQuoteIntent, quoteIntent } from '@/lib/quote-intent'
 import AppIcon from '@/components/ui/AppIcon.vue'
+import SocialIcon from '@/components/ui/SocialIcon.vue'
 import TurnstileWidget from '@/components/ui/TurnstileWidget.vue'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
@@ -310,7 +313,7 @@ onMounted(() => {
           </li>
         </ol>
 
-        <div v-reveal class="mt-8 space-y-3 border-t border-white/[0.07] pt-6">
+        <div v-if="hasDirectChannels" v-reveal class="mt-8 space-y-3 border-t border-white/[0.07] pt-6">
           <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted/70">
             Prefere falar diretamente?
           </p>
@@ -327,7 +330,7 @@ onMounted(() => {
             </span>
             <span class="min-w-0">
               <span class="block text-[0.8rem] font-medium">WhatsApp</span>
-              <span class="block text-[0.68rem] text-muted">Conversar sobre o projeto</span>
+              <span class="block text-[0.68rem] text-muted">{{ contact.whatsappDisplay || 'Conversar sobre o projeto' }}</span>
             </span>
             <AppIcon name="arrow-up-right" :size="15" class="ml-auto text-muted" />
           </a>
@@ -347,10 +350,22 @@ onMounted(() => {
             <AppIcon name="arrow-up-right" :size="15" class="ml-auto text-muted" />
           </a>
 
-          <p v-if="!hasWhatsApp && !hasEmail" class="text-[0.78rem] leading-relaxed text-muted/70">
-            Os canais diretos serão exibidos aqui assim que estiverem configurados. Por enquanto,
-            use o formulário ao lado.
-          </p>
+          <a
+            v-if="hasLinkedIn"
+            :href="contact.linkedin"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 text-sm text-paper transition hover:border-gold/30 hover:bg-gold/[0.04]"
+          >
+            <span class="grid size-8 place-items-center rounded-lg bg-gold/10 text-gold">
+              <SocialIcon name="linkedin" :size="16" />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-[0.8rem] font-medium">LinkedIn</span>
+              <span class="block text-[0.68rem] text-muted">Perfil profissional</span>
+            </span>
+            <AppIcon name="arrow-up-right" :size="15" class="ml-auto text-muted" />
+          </a>
         </div>
       </div>
 

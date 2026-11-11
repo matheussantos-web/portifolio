@@ -5,15 +5,17 @@
  * Nada de números, e-mails ou perfis inventados.
  */
 export const contact = {
-  /** Somente dígitos, com DDI e DDD. Ex.: '5511999999999'. */
-  whatsappNumber: '',
+  /** Somente dígitos, com DDI e DDD. Ex.: '5511999999999'. Vazio = não renderiza. */
+  whatsappNumber: '5521965115205',
   /** Como o número aparece na interface. Ex.: '+55 (11) 99999-9999'. */
-  whatsappDisplay: '',
-  email: '',
-  instagram: '',
-  /** Perfil real informado nos repositórios do projeto. */
+  whatsappDisplay: '+55 (21) 96511-5205',
+  /** E-mail público no README do GitHub (matheussantos-web). */
+  email: 'matheus281197@gmail.com',
+  /** Só preencher se existir perfil público confirmado. */
+  instagram: 'https://www.instagram.com/mssouza_th/',
   github: 'https://github.com/matheussantos-web',
-  linkedin: '',
+  /** Só preencher com URL pública confirmada. */
+  linkedin: 'https://www.linkedin.com/in/matheussantosdev97/',
 } as const
 
 export type ContactChannel = 'whatsapp' | 'email' | 'instagram' | 'github' | 'linkedin'

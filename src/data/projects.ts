@@ -20,8 +20,8 @@ export interface Project {
   linkNote: string
   quoteType: string
   /**
-   * Imagem de apresentação. Deixe vazio para usar o placeholder elegante.
-   * Quando houver uma imagem real, coloque o arquivo em /public e informe o caminho.
+   * Imagem de apresentação. Campo vazio: o bloco visual não é renderizado.
+   * Quando houver screenshot real, coloque o arquivo em /public (webp) e informe o caminho.
    */
   image: string
   imageAlt: string

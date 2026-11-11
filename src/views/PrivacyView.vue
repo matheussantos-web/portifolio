@@ -230,8 +230,7 @@ usePageSeo({
             <h2>10. Contato</h2>
             <p>
               Para dúvidas, solicitações relacionadas aos seus dados ou exercício de direitos,
-              utilize o formulário de contato do site. Se um canal direto estiver configurado, ele
-              também estará disponível abaixo.
+              utilize os canais abaixo ou o formulário de contato do site.
             </p>
             <ul>
               <li v-if="hasEmail">
