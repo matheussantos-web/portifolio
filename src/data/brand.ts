@@ -16,6 +16,6 @@ export const brand = {
    * Foto profissional. Coloque o arquivo em /public (ex.: /sobre.webp)
    * e informe o caminho abaixo. Campo vazio: o bloco não é renderizado.
    */
-  aboutPhoto: '',
+  aboutPhoto: '/sobre.webp',
   aboutPhotoAlt: 'Retrato de Matheus Santos, desenvolvedor web e criador da Th Apps',
 } as const
