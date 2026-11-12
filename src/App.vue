@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useHead } from '@unhead/vue'
 import { useRoute } from 'vue-router'
+import CustomCursor from '@/components/ui/CustomCursor.vue'
 import FloatingContact from '@/components/layout/FloatingContact.vue'
 import ScrollProgress from '@/components/layout/ScrollProgress.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
@@ -87,6 +88,7 @@ onBeforeUnmount(() => {
 
   <SiteFooter />
   <FloatingContact />
+  <CustomCursor />
 
   <p class="sr-only" aria-live="polite">{{ announcement }}</p>
 </template>

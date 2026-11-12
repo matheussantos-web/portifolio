@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { projectCategories, projects, type ProjectCategory } from '@/data/projects'
 import { useQuoteRequest } from '@/lib/use-quote-request'
+import { trackQuoteClick } from '@/lib/analytics'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { prefersReducedMotion } from '@/lib/motion'
 import AppIcon from '@/components/ui/AppIcon.vue'
@@ -312,7 +313,7 @@ onBeforeUnmount(() => {
               v-magnetic
               type="button"
               class="btn btn-primary relative mt-6 !min-h-[2.65rem] !text-[0.78rem]"
-              @click="requestQuote()"
+              @click="() => { trackQuoteClick('project'); requestQuote() }"
             >
               Solicitar orçamento
               <AppIcon name="arrow-up-right" :size="15" />

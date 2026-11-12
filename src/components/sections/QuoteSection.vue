@@ -17,6 +17,7 @@ import {
   timelineOptions,
 } from '@/lib/contact'
 import { consumeQuoteIntent, quoteIntent } from '@/lib/quote-intent'
+import { trackQuoteClick, trackQuoteSubmit } from '@/lib/analytics'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import SocialIcon from '@/components/ui/SocialIcon.vue'
 import TurnstileWidget from '@/components/ui/TurnstileWidget.vue'
@@ -59,6 +60,7 @@ const turnstileError = ref(false)
 const turnstileRef = ref<InstanceType<typeof TurnstileWidget> | null>(null)
 const startedAt = ref(Date.now())
 const lastAttempt = ref<FormState | null>(null)
+const focusedField = ref<string | null>(null)
 
 const endpointConfigured = Boolean(contactEndpoint)
 const requiresTurnstile = Boolean(turnstileSiteKey)
@@ -248,6 +250,7 @@ async function submit() {
     status.value = 'success'
     statusMessage.value = ''
     resetForm()
+    trackQuoteSubmit(true, 'contact')
   } catch (error) {
     status.value = 'error'
     if (error instanceof DOMException && error.name === 'AbortError') {
@@ -257,6 +260,7 @@ async function submit() {
       statusMessage.value =
         'Não foi possível enviar sua solicitação agora. Tente novamente em instantes ou fale diretamente pelos canais de contato.'
     }
+    trackQuoteSubmit(false, 'contact')
     turnstileRef.value?.reset()
     turnstileToken.value = ''
   } finally {
@@ -415,7 +419,7 @@ onMounted(() => {
           </div>
 
           <div class="grid gap-4 sm:grid-cols-2">
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'name', 'is-filled': form.name }">
               <label class="field-label" for="quote-name">Nome completo *</label>
               <input
                 id="quote-name"
@@ -430,13 +434,15 @@ onMounted(() => {
                 :aria-invalid="Boolean(errors.name)"
                 :aria-describedby="errors.name ? 'quote-name-error' : undefined"
                 @input="clearError('name')"
+                @focus="focusedField = 'name'"
+                @blur="focusedField === 'name' && (focusedField = null)"
               />
               <p v-if="errors.name" id="quote-name-error" class="error-text" role="alert">
                 {{ errors.name }}
               </p>
             </div>
 
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'company', 'is-filled': form.company }">
               <label class="field-label" for="quote-company">
                 Empresa ou negócio <span class="field-optional">(opcional)</span>
               </label>
@@ -449,10 +455,12 @@ onMounted(() => {
                 autocomplete="organization"
                 placeholder="Nome da empresa, se houver"
                 maxlength="120"
+                @focus="focusedField = 'company'"
+                @blur="focusedField === 'company' && (focusedField = null)"
               />
             </div>
 
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'phone', 'is-filled': form.phone }">
               <label class="field-label" for="quote-phone">WhatsApp *</label>
               <input
                 id="quote-phone"
@@ -468,13 +476,15 @@ onMounted(() => {
                 :aria-invalid="Boolean(errors.phone)"
                 :aria-describedby="errors.phone ? 'quote-phone-error' : undefined"
                 @input="onPhoneInput"
+                @focus="focusedField = 'phone'"
+                @blur="focusedField === 'phone' && (focusedField = null)"
               />
               <p v-if="errors.phone" id="quote-phone-error" class="error-text" role="alert">
                 {{ errors.phone }}
               </p>
             </div>
 
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'email', 'is-filled': form.email }">
               <label class="field-label" for="quote-email">E-mail *</label>
               <input
                 id="quote-email"
@@ -490,13 +500,15 @@ onMounted(() => {
                 :aria-invalid="Boolean(errors.email)"
                 :aria-describedby="errors.email ? 'quote-email-error' : undefined"
                 @input="clearError('email')"
+                @focus="focusedField = 'email'"
+                @blur="focusedField === 'email' && (focusedField = null)"
               />
               <p v-if="errors.email" id="quote-email-error" class="error-text" role="alert">
                 {{ errors.email }}
               </p>
             </div>
 
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'projectType', 'is-filled': form.projectType }">
               <label class="field-label" for="quote-project-type">Tipo de projeto *</label>
               <select
                 id="quote-project-type"
@@ -507,6 +519,8 @@ onMounted(() => {
                 :aria-invalid="Boolean(errors.projectType)"
                 :aria-describedby="errors.projectType ? 'quote-project-type-error' : undefined"
                 @change="clearError('projectType')"
+                @focus="focusedField = 'projectType'"
+                @blur="focusedField === 'projectType' && (focusedField = null)"
               >
                 <option value="" disabled>Selecione uma opção</option>
                 <option v-for="option in projectTypeOptions" :key="option.value" :value="option.value">
@@ -518,13 +532,15 @@ onMounted(() => {
               </p>
             </div>
 
-            <div>
+            <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'timeline', 'is-filled': form.timeline }">
               <label class="field-label" for="quote-timeline">Prazo pretendido</label>
               <select
                 id="quote-timeline"
                 v-model="form.timeline"
                 class="input-base"
                 name="timeline"
+                @focus="focusedField = 'timeline'"
+                @blur="focusedField === 'timeline' && (focusedField = null)"
               >
                 <option v-for="option in timelineOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
@@ -533,7 +549,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <div>
+          <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'description', 'is-filled': form.description }">
             <div class="flex items-end justify-between gap-3">
               <label class="field-label" for="quote-description">Descrição da ideia *</label>
               <span class="mb-1 text-[0.62rem] tabular-nums text-muted/60">
@@ -552,13 +568,15 @@ onMounted(() => {
               :aria-invalid="Boolean(errors.description)"
               :aria-describedby="errors.description ? 'quote-description-error' : undefined"
               @input="clearError('description')"
+              @focus="focusedField = 'description'"
+              @blur="focusedField === 'description' && (focusedField = null)"
             />
             <p v-if="errors.description" id="quote-description-error" class="error-text" role="alert">
               {{ errors.description }}
             </p>
           </div>
 
-          <div>
+          <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'features', 'is-filled': form.features }">
             <div class="flex items-end justify-between gap-3">
               <label class="field-label" for="quote-features">
                 Funcionalidades desejadas <span class="field-optional">(opcional)</span>
@@ -578,17 +596,21 @@ onMounted(() => {
               :aria-invalid="Boolean(errors.features)"
               :aria-describedby="errors.features ? 'quote-features-error' : undefined"
               @input="clearError('features')"
+              @focus="focusedField = 'features'"
+              @blur="focusedField === 'features' && (focusedField = null)"
             />
             <p v-if="errors.features" id="quote-features-error" class="error-text" role="alert">
               {{ errors.features }}
             </p>
           </div>
 
-          <div>
+          <div class="field-wrapper" :class="{ 'is-focused': focusedField === 'budget', 'is-filled': form.budget }">
             <label class="field-label" for="quote-budget">
               Faixa de investimento <span class="field-optional">(opcional)</span>
             </label>
-            <select id="quote-budget" v-model="form.budget" class="input-base" name="budget">
+            <select id="quote-budget" v-model="form.budget" class="input-base" name="budget"
+              @focus="focusedField = 'budget'"
+              @blur="focusedField === 'budget' && (focusedField = null)">
               <option value="">Selecione uma opção</option>
               <option v-for="option in budgetOptions" :key="option.value" :value="option.value">
                 {{ option.label }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { services } from '@/data/services'
 import { useQuoteRequest } from '@/lib/use-quote-request'
+import { trackQuoteClick } from '@/lib/analytics'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import SectionHeading from '@/components/ui/SectionHeading.vue'
 
@@ -30,7 +31,7 @@ const { requestQuote } = useQuoteRequest()
           v-magnetic
           type="button"
           class="btn btn-secondary shrink-0 self-start md:self-auto"
-          @click="requestQuote()"
+          @click="() => { trackQuoteClick('service'); requestQuote() }"
         >
           Solicitar orçamento
           <AppIcon name="arrow-up-right" :size="16" />
@@ -68,7 +69,7 @@ const { requestQuote } = useQuoteRequest()
                 type="button"
                 class="mt-6 inline-flex items-center gap-1.5 self-start text-[0.76rem] font-medium text-muted transition hover:text-gold"
                 :aria-label="`Solicitar orçamento para ${service.title}`"
-                @click="requestQuote(service.projectType)"
+                @click="() => { trackQuoteClick('service'); requestQuote(service.projectType) }"
               >
                 Solicitar orçamento
                 <AppIcon

@@ -4,6 +4,7 @@ import { brand } from '@/data/brand'
 import { buildWhatsAppLink } from '@/lib/contact'
 import { gsap } from '@/lib/gsap'
 import { prefersReducedMotion } from '@/lib/motion'
+import { trackQuoteClick } from '@/lib/analytics'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import HeroCanvas from '@/components/ui/HeroCanvas.vue'
 import SocialIcon from '@/components/ui/SocialIcon.vue'
@@ -216,7 +217,7 @@ onBeforeUnmount(() => cleanup?.())
             Explorar projetos
             <AppIcon name="arrow-right" :size="16" />
           </RouterLink>
-          <RouterLink v-magnetic to="/#contato" class="btn btn-secondary">
+          <RouterLink v-magnetic to="/#contato" class="btn btn-secondary" @click="trackQuoteClick('hero')">
             Vamos conversar
             <AppIcon name="arrow-up-right" :size="16" />
           </RouterLink>

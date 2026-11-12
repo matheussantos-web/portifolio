@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { brand } from '@/data/brand'
 import { getProjectBySlug, projects } from '@/data/projects'
 import { buildWhatsAppLink } from '@/lib/contact'
+import { trackQuoteClick } from '@/lib/analytics'
 import { usePageSeo } from '@/lib/seo'
 import { useQuoteRequest } from '@/lib/use-quote-request'
 import AppIcon from '@/components/ui/AppIcon.vue'
@@ -129,7 +130,7 @@ usePageSeo({
               <button
                 type="button"
                 class="btn btn-ghost !min-h-[2.65rem] !px-2 !text-[0.8rem]"
-                @click="requestQuote(project.quoteType)"
+                @click="() => { trackQuoteClick('project'); requestQuote(project!.quoteType) }"
               >
                 Quero algo parecido
                 <AppIcon name="arrow-right" :size="15" />

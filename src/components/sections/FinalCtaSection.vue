@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { buildWhatsAppLink } from '@/lib/contact'
+import { trackQuoteClick } from '@/lib/analytics'
 import { useQuoteRequest } from '@/lib/use-quote-request'
 import AppIcon from '@/components/ui/AppIcon.vue'
 
@@ -28,7 +29,7 @@ const whatsappLink = buildWhatsAppLink('contact')
           </p>
 
           <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button v-magnetic type="button" class="btn btn-primary w-full sm:w-auto" @click="requestQuote()">
+            <button v-magnetic type="button" class="btn btn-primary w-full sm:w-auto" @click="() => { trackQuoteClick('final-cta'); requestQuote() }">
               Solicitar orçamento
               <AppIcon name="arrow-up-right" :size="16" />
             </button>
